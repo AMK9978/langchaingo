@@ -48,7 +48,7 @@ func Test(t *testing.T) {
 	c := NewConstitutional(model, chain, []ConstitutionalPrinciple{NewConstitutionalPrinciple(
 		"Tell if this answer is good.",
 		"Give a better answer."),
-	}, map[string]prompts.PromptTemplate{})
+	}, nil)
 	_, err = Run(context.Background(), c, "Hi! I'm Jim")
 	require.NoError(t, err)
 

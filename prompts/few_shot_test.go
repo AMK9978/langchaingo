@@ -92,6 +92,20 @@ func TestFewShotPrompt_Format(t *testing.T) {
 			"This is a test about animals.\nfoo: bar\nbaz: foo\nNow you try to talk about party.",
 		},
 		{
+			"functionality test",
+			examplePrompt,
+			[]map[string]string{{"question": "foo", "answer": "bar"}, {"question": "baz", "answer": "foo"}},
+			"This is a test about {{.content}}.",
+			"Now you try to talk about {{.new_content}}.",
+			map[string]interface{}{"content": "animals", "new_content": "party"},
+			nil,
+			"\n",
+			TemplateFormatGoTemplate,
+			true,
+			false,
+			"This is a test about animals.\nfoo: bar\nbaz: foo\nNow you try to talk about party.",
+		},
+		{
 			"functionality test with partial input",
 			examplePrompt,
 			[]map[string]string{{"question": "foo", "answer": "bar"}, {"question": "baz", "answer": "foo"}},
@@ -126,8 +140,8 @@ func TestFewShotPrompt_Format(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
 			t.Helper()
-			p, err := NewFewShotPrompt(tc.examplePrompt, tc.examples, nil, tc.prefix, tc.suffix, tc.input,
-				tc.partialInput, tc.exampleSeparator, tc.templateFormat, tc.validateTemplate)
+			p, err := NewFewShotPrompt(tc.examplePrompt, tc.examples, nil, tc.prefix, tc.suffix,
+				getMapKeys(tc.input), tc.partialInput, tc.exampleSeparator, tc.templateFormat, tc.validateTemplate)
 			if tc.wantErr {
 				checkError(t, err, tc.expected)
 				return

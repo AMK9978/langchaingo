@@ -27,7 +27,7 @@ type FewShotPrompt struct {
 	// A prompt template string to put after the examples.
 	Suffix string
 	// A list of the names of the variables the prompt template expects.
-	InputVariables map[string]any
+	InputVariables []string
 	// Represents a map of variable names to values or functions that return values. If the value is a function, it will
 	// be called when the prompt template is rendered.
 	PartialVariables map[string]any
@@ -42,7 +42,7 @@ type FewShotPrompt struct {
 // NewFewShotPrompt creates a new few-shot prompt with the given input. It returns error if there is no example, both
 // examples and exampleSelector are provided, or CheckValidTemplate returns err when ValidateTemplate is true.
 func NewFewShotPrompt(examplePrompt PromptTemplate, examples []map[string]string, exampleSelector ExampleSelector,
-	prefix string, suffix string, input map[string]interface{}, partialInput map[string]interface{},
+	prefix string, suffix string, input []string, partialInput map[string]interface{},
 	exampleSeparator string, templateFormat TemplateFormat, validateTemplate bool,
 ) (*FewShotPrompt, error) {
 	err := validateExamples(examples, exampleSelector)
@@ -66,7 +66,7 @@ func NewFewShotPrompt(examplePrompt PromptTemplate, examples []map[string]string
 	}
 
 	if prompt.ValidateTemplate {
-		err := CheckValidTemplate(prompt.Prefix+prompt.Suffix, prompt.TemplateFormat, append(getMapKeys(input),
+		err := CheckValidTemplate(prompt.Prefix+prompt.Suffix, prompt.TemplateFormat, append(input,
 			getMapKeys(partialInput)...))
 		if err != nil {
 			return nil, err
